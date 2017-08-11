@@ -45,6 +45,10 @@ export default class TodoInput extends Component {
 		return (
 			<Item rounded>
 				<Input
+					onSubmitEditing={() => {
+						inputValue.length > 0 ? addNewTodo(inputValue) : null
+						this.setState({ inputValue: null })
+					}}
 					placeholder='Add your todo'
 					value={inputValue}
 					onChangeText={inputValue => this.setState({ inputValue })} />

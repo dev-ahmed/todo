@@ -15,10 +15,15 @@ const styles = StyleSheet.create({
 	},
 	buttonsBox: {
 		flexDirection: 'row',
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		marginLeft: 10,
+		marginRight: 10,
 	},
 	button: {
-		backgroundColor: 'transparent'
+		alignSelf: 'center',
+		height: 40
+		// backgroundColor: 'transparent'
 	}
 })
 
@@ -27,7 +32,9 @@ class BottomMenu extends Component {
 
 	constructor(props, context) {
 		super(props, context);
-		this.state = {}
+		this.state = {
+			activeButton: 'All'
+		}
 	}
 
 	componentWillMount() {
@@ -40,7 +47,7 @@ class BottomMenu extends Component {
 
 	render() {
 
-		let { buttons, handleClick } = this.props;
+		let { buttons, handleClick, active } = this.props;
 		// let { } = this.state;
 
 		return (
@@ -48,7 +55,15 @@ class BottomMenu extends Component {
 				{
 					buttons.map((button) => {
 						return (
-							<Button onPress={() => { handleClick(button) }} style={styles.button}>
+							<Button
+								rounded
+								success={this.state.activeButton == button}
+								onPress={
+									() => {
+										handleClick(button)
+										this.setState({ activeButton: button })
+									}}
+								style={styles.button}>
 								<Text>
 									{button}
 								</Text>
@@ -56,7 +71,6 @@ class BottomMenu extends Component {
 						)
 					})
 				}
-
 			</Footer>
 		);
 	}

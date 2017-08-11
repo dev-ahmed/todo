@@ -72,6 +72,7 @@ export default class Main extends Component {
 						todos={ds.cloneWithRows(filteredTodos)}
 					/>
 				</Container>
+				
 				<BottomMenu buttons={buttons} handleClick={(filterType) => this.handleFilter(filterType)} />
 			</View>
 		);
