@@ -2,43 +2,60 @@
 import React, { Component } from 'react';
 import {
 	View,
-	Text,
 	StyleSheet
 } from 'react-native'
+import {
+	Content,
+	Text,
+	Item,
+	Input,
+	Icon
+} from 'native-base'
+import {
+	responsiveHeight,
+	responsiveWidth
+} from 'react-native-responsive-dimensions';
 
-class Item extends Component {
+
+const styles = StyleSheet.create({
+	mainContainer: {
+		flex: 1,
+		width: responsiveWidth(100),
+		backgroundColor: 'white'
+	},
+	item: {
+		width: responsiveWidth(95),
+		height: responsiveHeight(8),
+		flexDirection: 'row',
+		justifyContent: 'space-between'
+	}
+})
+
+class Todo extends Component {
 
 	constructor(props, context) {
 		super(props, context);
 		this.state = {}
 	}
 
-	componentWillMount() {
-
-	}
-
-	componentDidMount() {
-
-	}
-
 	render() {
 
-		// let { } = this.props;
-		// let { } = this.state;
+		let {
+			itemName,
+			handleIconPress,
+			finished
+		} = this.props
 
 		return (
-			<View style={styles.mainContainer}>
-				<Text>Item</Text>
-			</View>
+			<Content style={styles.mainContainer}>
+				<Item style={styles.item} success={finished}>
+					<Text > {itemName} </Text>
+					<Icon name='checkmark-circle' onPress={handleIconPress} />
+				</Item>
+			</Content>
 		);
 	}
 }
 
-const styles = StyleSheet.create({
-	mainContainer: {
-		flex: 1,
-		backgroundColor: 'white'
-	}
-})
 
-export default Item;
+export default Todo;

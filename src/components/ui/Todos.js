@@ -17,6 +17,8 @@ const styles = StyleSheet.create({
 })
 
 
+const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+
 class Todos extends Component {
 
 	constructor(props, context) {
@@ -26,16 +28,19 @@ class Todos extends Component {
 
 	render() {
 
-		let { todos } = this.props;
+		let { todos, renderRow } = this.props;
 		// let { } = this.state;
 
 		return (
-			<List dataArray={todos}>
-
-			</List>
+			<ListView
+				dataSource={todos}
+				//dataArray={todos}
+				renderRow={(data, rowId, index) => renderRow(data, rowId, index)}
+			>
+			</ListView>
 		);
 	}
 }
 
 
-export default Item;
+export default Todos;

@@ -40,7 +40,7 @@ class BottomMenu extends Component {
 
 	render() {
 
-		let { buttons } = this.props;
+		let { buttons, handleClick } = this.props;
 		// let { } = this.state;
 
 		return (
@@ -48,7 +48,7 @@ class BottomMenu extends Component {
 				{
 					buttons.map((button) => {
 						return (
-							<Button style={styles.button}>
+							<Button onPress={() => { handleClick(button) }} style={styles.button}>
 								<Text>
 									{button}
 								</Text>
