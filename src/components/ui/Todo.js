@@ -2,14 +2,16 @@
 import React, { Component } from 'react';
 import {
 	View,
-	StyleSheet
+	StyleSheet,
+	TouchableOpacity
 } from 'react-native'
 import {
 	Content,
 	Text,
 	Item,
 	Input,
-	Icon
+	Icon,
+	Button
 } from 'native-base'
 import {
 	responsiveHeight,
@@ -28,6 +30,9 @@ const styles = StyleSheet.create({
 		height: responsiveHeight(8),
 		flexDirection: 'row',
 		justifyContent: 'space-between'
+	},
+	btn: {
+		// backgroundColor: 'transparent'
 	}
 })
 
@@ -43,13 +48,19 @@ class Todo extends Component {
 		let {
 			itemName,
 			handleIconPress,
-			finished
+			finished,
+			deleteTodo
 		} = this.props
 
 		return (
 			<Content style={styles.mainContainer}>
 				<Item style={styles.item} success={finished}>
-					<Text > {itemName} </Text>
+					<TouchableOpacity
+						style={styles.btn}
+						onLongPress={deleteTodo}
+					>
+						<Text > {itemName} </Text>
+					</TouchableOpacity>
 					<Icon name='checkmark-circle' onPress={handleIconPress} />
 				</Item>
 			</Content>

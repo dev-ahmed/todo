@@ -48,7 +48,9 @@ export default class Main extends Component {
 			<Todo
 				itemName={data.name}
 				finished={data.checked}
-				handleIconPress={() => this.checkTodo(data.index)} />
+				handleIconPress={() => this.checkTodo(data.index)}
+				deleteTodo={() => { this.deleteTodo(data.index) }}
+			/>
 		)
 	}
 
@@ -72,7 +74,6 @@ export default class Main extends Component {
 						todos={ds.cloneWithRows(filteredTodos)}
 					/>
 				</Container>
-				
 				<BottomMenu buttons={buttons} handleClick={(filterType) => this.handleFilter(filterType)} />
 			</View>
 		);
@@ -83,6 +84,15 @@ export default class Main extends Component {
 		this.setState({
 			filteredTodos
 		})
+	}
+
+
+	deleteTodo(index) {
+		let { todos } = this.state;
+		todos = todos.filter(todo => {
+			return todo.index != index
+		});
+		this.setState({ filteredTodos: todos }, this.addTodosToStorage(todos))
 	}
 
 	addNewTodo(todo) {
@@ -98,7 +108,7 @@ export default class Main extends Component {
 		this.setState({
 			todos: todos
 		}, () => {
-			this.addTodoToStorage(this.state.todos);
+			this.addTodosToStorage(this.state.todos);
 		})
 	}
 
@@ -113,11 +123,11 @@ export default class Main extends Component {
 		this.setState({
 			todos: todos
 		}, () => {
-			this.addTodoToStorage(this.state.todos);
+			this.addTodosToStorage(this.state.todos);
 		});
 	}
 
-	addTodoToStorage(todos) {
+	addTodosToStorage(todos) {
 		AsyncStorage.setItem('todos', JSON.stringify(todos));
 	}
 
