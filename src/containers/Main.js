@@ -25,9 +25,9 @@ export default class Main extends Component {
 
 	constructor(props, context) {
 		super(props, context);
+		this.allTodos = [];
 		this.state = {
-			todos: [],
-			filteredTodos: []
+			todos: []
 		}
 	}
 
@@ -36,12 +36,12 @@ export default class Main extends Component {
 			.then((res) => {
 				let todos = JSON.parse(res);
 				if (Array.isArray(todos)) {
-					this.setState({ todos: todos, filteredTodos: todos })
+					this.allTodos = todos;
+					this.setState({ todos: todos })
 				}
 			});
 		// this.removeTodoFromStorage();
 	}
-
 
 	renderRow(data, rowId, index) {
 		return (
@@ -56,10 +56,8 @@ export default class Main extends Component {
 
 	render() {
 
-		// let { } = this.props;
 		let {
 			todos,
-			filteredTodos
 		} = this.state;
 
 		return (
@@ -71,7 +69,7 @@ export default class Main extends Component {
 					<Input addNewTodo={(value) => this.addNewTodo(value)} />
 					<Todos
 						renderRow={(data, rowId, index) => this.renderRow(data, rowId, index)}
-						todos={ds.cloneWithRows(filteredTodos)}
+						todos={ds.cloneWithRows(todos)}
 					/>
 				</Container>
 				<BottomMenu buttons={buttons} handleClick={(filterType) => this.handleFilter(filterType)} />
@@ -81,8 +79,9 @@ export default class Main extends Component {
 
 	handleFilter(filterType) {
 		let filteredTodos = this.filterTodos(filterType);
+		console.log(filteredTodos)
 		this.setState({
-			filteredTodos
+			todos: filteredTodos
 		})
 	}
 
@@ -92,7 +91,8 @@ export default class Main extends Component {
 		todos = todos.filter(todo => {
 			return todo.index != index
 		});
-		this.setState({ filteredTodos: todos }, this.addTodosToStorage(todos))
+		this.allTodos = todos;
+		this.setState({ todos: todos }, this.addTodosToStorage(todos))
 	}
 
 	addNewTodo(todo) {
@@ -100,9 +100,9 @@ export default class Main extends Component {
 		let tmp = {};
 
 		tmp['name'] = todo;
-		tmp['index'] = todos.length;
+		tmp['index'] = todos.length !== 0 ? todos[todos.length - 1].index + 1 : todos.length;
 		tmp['checked'] = false;
-		console.log(todos);
+		// console.log(todos);
 		todos.push(tmp);
 
 		this.setState({
@@ -116,6 +116,7 @@ export default class Main extends Component {
 		let { todos } = this.state;
 		todos.map((todo, i) => {
 			if (index === i) {
+				console.log(todo)
 				todos[i].checked = !todos[i].checked;
 			}
 		});
@@ -144,14 +145,16 @@ export default class Main extends Component {
 
 		switch (filterType) {
 			case 'Active':
-				return todos.filter((todo) => {
+				return this.allTodos.filter((todo) => {
 					return todo.checked == false;
 				});
 			case 'Completed':
-				return todos.filter((todo) => {
+				return this.allTodos.filter((todo) => {
 					return todo.checked == true;
 				});
 			case 'All':
+				return this.allTodos;
+			default:
 				return todos;
 		}
 	}
