@@ -20,6 +20,8 @@ import Header from "@ui/Header";
 import DialogBox from 'react-native-dialogbox';
 import TodoDetails from '@ui/TodoDetails';
 import { todosHelper } from "@lib/todos";
+import moment from 'moment';
+
 
 const buttons = footerButtonsArray
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
@@ -97,6 +99,7 @@ export default class Main extends Component {
 					onChangeText={(text) => {
 						this.updateTodo(text);
 					}}
+					date={"date" in currentSelectedTodo ? currentSelectedTodo.date : ""}
 					todoText={"name" in currentSelectedTodo ? currentSelectedTodo.name : ""}
 					isOpen={openTodoDetails}
 					onClose={() => this.onCloseTodoDetails()} />
@@ -151,6 +154,7 @@ export default class Main extends Component {
 		tmp['name'] = todo;
 		tmp['index'] = todos.length !== 0 ? todos[todos.length - 1].index + 1 : todos.length;
 		tmp['checked'] = false;
+		tmp['date'] = moment().format('YYYY/MMM/DD HH:MM')
 		allTodos.push(tmp);
 
 		this.setState({
@@ -190,6 +194,7 @@ export default class Main extends Component {
 		let { currentSelectedTodo, filterType } = this.state;
 		console.log(currentSelectedTodo);
 		todos[currentSelectedTodo.index].name = text;
+		todos[currentSelectedTodo.index].date = moment().format('DD MMM - HH:MM a');
 		this.allTodos = todos;
 		this.setState(
 			{ todos: this.filterTodos(filterType, this.allTodos) },

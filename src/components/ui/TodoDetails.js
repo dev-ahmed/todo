@@ -37,7 +37,8 @@ export default class ToDoDetails extends Component {
 			isOpen,
 			onClose,
 			todoText,
-			onChangeText
+			onChangeText,
+			date
 		 } = this.props;
 
 		let { text } = this.state;
@@ -58,9 +59,9 @@ export default class ToDoDetails extends Component {
 					<Header />
 					<Content>
 						<Card>
-							{/*<CardItem header>
-								<Text>NativeBase</Text>
-							</CardItem>*/}
+							<CardItem header>
+								<Text>{date}</Text>
+							</CardItem>
 							<CardItem>
 								<Body>
 									<Textarea
