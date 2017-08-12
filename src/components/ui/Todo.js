@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between'
 	},
 	btn: {
-		// backgroundColor: 'transparent'
+		width: responsiveWidth(80)
 	}
 })
 
@@ -59,7 +59,7 @@ class Todo extends Component {
 						style={styles.btn}
 						onLongPress={deleteTodo}
 					>
-						<Text > {itemName} </Text>
+						<Text numberOfLines={2} > {itemName} </Text>
 					</TouchableOpacity>
 					<Icon name='checkmark-circle' onPress={handleIconPress} />
 				</Item>

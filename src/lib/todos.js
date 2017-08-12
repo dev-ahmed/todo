@@ -3,6 +3,8 @@ import {
 	AsyncStorage
 } from 'react-native';
 
+import _ from 'lodash';
+
 class Todos {
 
 	deleteTodoHandler(index, todos) {
@@ -41,6 +43,13 @@ class Todos {
 			case 'All':
 				return allTodos;
 		}
+	}
+
+
+	updateTodosList(todos, newTodos) {
+		_.pull(todos, ..._.difference(todos, newTodos));
+		todos.push(..._.difference(newTodos, todos));
+		return todos;
 	}
 
 	addTodosToStorage(todos) {

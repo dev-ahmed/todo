@@ -47,6 +47,10 @@ export default class Main extends Component {
 		// todosHelper.removeTodoFromStorage();
 	}
 
+	componentDidMount() {
+		// todosHelper.removeTodoFromStorage();
+	}
+
 	renderRow(data, rowId, index) {
 		return (
 			<Todo
@@ -83,7 +87,7 @@ export default class Main extends Component {
 	}
 
 	handleFilter(filterType) {
-		let filteredTodos = todosHelper.filterTodosHandler(filterType, this.allTodos);
+		let filteredTodos = this.filterTodos(filterType, this.allTodos);
 		this.setState({
 			todos: filteredTodos
 		})
@@ -115,9 +119,10 @@ export default class Main extends Component {
 		let { filterType } = this.state;
 		let { allTodos } = this;
 		let todos = todosHelper.deleteTodoHandler(index, allTodos);
+		console.log('todos after delete', todos);
 		this.allTodos = todos;
 		this.setState({
-			todos: todosHelper.filterTodosHandler(filterType, todos)
+			todos: this.filterTodos(filterType, todos)
 		}, todosHelper.addTodosToStorage(todos))
 	}
 
@@ -133,7 +138,7 @@ export default class Main extends Component {
 		allTodos.push(tmp);
 
 		this.setState({
-			todos: allTodos
+			todos: this.filterTodos(filterType, allTodos)
 		}, () => {
 			todosHelper.addTodosToStorage(allTodos);
 		})
@@ -141,18 +146,28 @@ export default class Main extends Component {
 
 	checkTodo(index) {
 		let { filterType } = this.state;
-		let { allTodos } = this;
-		allTodos.map((todo, i) => {
-			if (index === i) {
-				allTodos[i].checked = !allTodos[i].checked;
-			}
-		});
+		let todos = this.allTodos;
+		console.log('index of checked', index);
+		console.log('todos before check', todos);
 
+		todos[index].checked = !todos[index].checked;
+		console.log('checked todo', todos[index]);
+
+
+		console.log('todos after check', todos);
+
+		this.allTodos = todos;
 		this.setState({
-			todos: todosHelper.filterTodosHandler(filterType, allTodos)
+			todos: this.filterTodos(filterType, todos)
 		}, () => {
-			todosHelper.addTodosToStorage(allTodos);
+			todosHelper.addTodosToStorage(todos);
 		});
 	}
+
+	filterTodos(filterType, todos) {
+		this.setState({ filterType });
+		return todosHelper.filterTodosHandler(filterType, todos);
+	}
+
 
 }
