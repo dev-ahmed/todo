@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white'
 	},
 	buttonsBox: {
+		backgroundColor: 'transparent',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',

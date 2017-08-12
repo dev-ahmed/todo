@@ -17,9 +17,6 @@ import { responsiveHeight } from 'react-native-responsive-dimensions';
 const styles = StyleSheet.create({
 	mainContainer: {
 		height: 40
-	},
-	input: {
-		height: 50
 	}
 })
 
@@ -45,6 +42,7 @@ export default class TodoInput extends Component {
 		return (
 			<Item rounded>
 				<Input
+					style={styles.input}
 					onSubmitEditing={() => {
 						inputValue.length > 0 ? addNewTodo(inputValue) : null
 						this.setState({ inputValue: null })

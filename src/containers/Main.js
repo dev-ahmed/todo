@@ -15,7 +15,10 @@ import Input from "@ui/Input";
 import {
 	footerButtonsArray
 } from '@config/config';
-import { Container, Header } from 'native-base';
+import { Container } from 'native-base';
+import Header from "@ui/Header";
+import DialogBox from 'react-native-dialogbox';
+import { todosHelper } from "@lib/todos";
 
 const buttons = footerButtonsArray
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
@@ -27,12 +30,13 @@ export default class Main extends Component {
 		super(props, context);
 		this.allTodos = [];
 		this.state = {
-			todos: []
+			todos: [],
+			filterType: 'All'
 		}
 	}
 
 	componentWillMount() {
-		this.getTodosFromStorage()
+		todosHelper.getTodosFromStorage()
 			.then((res) => {
 				let todos = JSON.parse(res);
 				if (Array.isArray(todos)) {
@@ -40,7 +44,7 @@ export default class Main extends Component {
 					this.setState({ todos: todos })
 				}
 			});
-		// this.removeTodoFromStorage();
+		// todosHelper.removeTodoFromStorage();
 	}
 
 	renderRow(data, rowId, index) {
@@ -49,7 +53,7 @@ export default class Main extends Component {
 				itemName={data.name}
 				finished={data.checked}
 				handleIconPress={() => this.checkTodo(data.index)}
-				deleteTodo={() => { this.deleteTodo(data.index) }}
+				deleteTodo={() => { this.handleTodoLongPress(data.index) }}
 			/>
 		)
 	}
@@ -62,7 +66,7 @@ export default class Main extends Component {
 
 		return (
 			<View style={styles.mainContainer}>
-				<Header />
+				<Header title="ToDo App" />
 				<Container
 					style={styles.subContainer}
 				>
@@ -73,92 +77,82 @@ export default class Main extends Component {
 					/>
 				</Container>
 				<BottomMenu buttons={buttons} handleClick={(filterType) => this.handleFilter(filterType)} />
+				<DialogBox ref={dialogbox => { this.dialogbox = dialogbox }} />
 			</View>
 		);
 	}
 
 	handleFilter(filterType) {
-		let filteredTodos = this.filterTodos(filterType);
-		console.log(filteredTodos)
+		let filteredTodos = todosHelper.filterTodosHandler(filterType, this.allTodos);
 		this.setState({
 			todos: filteredTodos
 		})
 	}
 
+	handleTodoLongPress(index) {
+		this.dialogbox.confirm({
+			title: 'Delete Todo?',
+			content: ['Are you sure?'],
+			ok: {
+				text: 'Ok',
+				style: {
+					color: 'red'
+				},
+				callback: () => {
+					this.deleteTodo(index);
+				},
+			},
+			cancel: {
+				text: 'Cancel',
+				style: {
+					color: 'blue'
+				}
+			},
+		});
+	}
 
 	deleteTodo(index) {
-		let { todos } = this.state;
-		todos = todos.filter(todo => {
-			return todo.index != index
-		});
+		let { filterType } = this.state;
+		let { allTodos } = this;
+		let todos = todosHelper.deleteTodoHandler(index, allTodos);
 		this.allTodos = todos;
-		this.setState({ todos: todos }, this.addTodosToStorage(todos))
+		this.setState({
+			todos: todosHelper.filterTodosHandler(filterType, todos)
+		}, todosHelper.addTodosToStorage(todos))
 	}
 
 	addNewTodo(todo) {
-		let todos = this.state.todos;
+		let { todos, filterType } = this.state;
+		let { allTodos } = this;
 		let tmp = {};
 
 		tmp['name'] = todo;
 		tmp['index'] = todos.length !== 0 ? todos[todos.length - 1].index + 1 : todos.length;
 		tmp['checked'] = false;
 		// console.log(todos);
-		todos.push(tmp);
+		allTodos.push(tmp);
 
 		this.setState({
-			todos: todos
+			todos: allTodos
 		}, () => {
-			this.addTodosToStorage(this.state.todos);
+			todosHelper.addTodosToStorage(allTodos);
 		})
 	}
 
 	checkTodo(index) {
-		let { todos } = this.state;
-		todos.map((todo, i) => {
+		let { filterType } = this.state;
+		let { allTodos } = this;
+		allTodos.map((todo, i) => {
 			if (index === i) {
-				console.log(todo)
-				todos[i].checked = !todos[i].checked;
+				allTodos[i].checked = !allTodos[i].checked;
 			}
 		});
 
 		this.setState({
-			todos: todos
+			todos: todosHelper.filterTodosHandler(filterType, allTodos)
 		}, () => {
-			this.addTodosToStorage(this.state.todos);
+			todosHelper.addTodosToStorage(allTodos);
 		});
 	}
-
-	addTodosToStorage(todos) {
-		AsyncStorage.setItem('todos', JSON.stringify(todos));
-	}
-
-	removeTodoFromStorage() {
-		AsyncStorage.removeItem('todos');
-	}
-
-	getTodosFromStorage() {
-		return AsyncStorage.getItem('todos');
-	}
-
-	filterTodos(filterType) {
-		let { todos } = this.state;
-
-		switch (filterType) {
-			case 'Active':
-				return this.allTodos.filter((todo) => {
-					return todo.checked == false;
-				});
-			case 'Completed':
-				return this.allTodos.filter((todo) => {
-					return todo.checked == true;
-				});
-			case 'All':
-				return this.allTodos;
-			default:
-				return todos;
-		}
-	}
-
-
 
 }
