@@ -44,18 +44,22 @@ export default class TodoInput extends Component {
 				<Input
 					style={styles.input}
 					onSubmitEditing={() => {
-						inputValue.length > 0 ? addNewTodo(inputValue) : null
+						inputValue && inputValue.length > 0 ? addNewTodo(inputValue) : null
 						this.setState({ inputValue: null })
 					}}
 					placeholder='Add your todo'
 					value={inputValue}
 					onChangeText={inputValue => this.setState({ inputValue })} />
-				<Icon
-					name='add-circle'
+				<Button
+					transparent
 					onPress={() => {
 						inputValue && inputValue.length > 0 ? addNewTodo(inputValue) : null
 						this.setState({ inputValue: null })
-					}} />
+					}}
+				>
+					<Icon
+						name='add-circle' />
+				</Button>
 			</Item>
 		);
 	}

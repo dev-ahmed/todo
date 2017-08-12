@@ -55,16 +55,16 @@ class Todo extends Component {
 
 		return (
 			// <Content style={styles.mainContainer} disableKBDismissScroll >
-				<Item style={styles.item} success={item.checked} >
-					<TouchableOpacity
-						style={styles.btn}
-						onLongPress={deleteTodo}
-						onPress={onPress}
-					>
-						<Text numberOfLines={2} > {item.name} </Text>
-					</TouchableOpacity>
-					<Icon name='checkmark-circle' onPress={handleIconPress} />
-				</Item>
+			<Item style={styles.item} success={item.checked} >
+				<TouchableOpacity
+					style={styles.btn}
+					onLongPress={deleteTodo}
+					onPress={onPress}
+				>
+					<Text numberOfLines={2} > {item.name} </Text>
+				</TouchableOpacity>
+				<Icon name='checkmark-circle' onPress={handleIconPress} />
+			</Item>
 			// </Content>
 		);
 	}

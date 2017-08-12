@@ -237,7 +237,7 @@ export default class Main extends Component {
 	openTodoDetails(index) {
 		todosHelper.getSingleTodo(this.allTodos, index)
 			.then((i) => {
-				this.setState({ openTodoDetails: true, currentSelectedTodo: this.state.todos[i] })
+				this.setState({ openTodoDetails: true, currentSelectedTodo: this.allTodos[i] })
 			})
 	}
 
