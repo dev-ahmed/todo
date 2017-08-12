@@ -1,37 +1,85 @@
 'use strict';
 import React, { Component } from 'react';
 import {
-    View,
-    Text
+	View,
+	Easing
 } from 'react-native'
 import {
-
+	Container,
+	Header,
+	Content,
+	Card,
+	CardItem,
+	Text,
+	Body,
+	Textarea
 } from 'native-base';
+
+
+import Modal from 'react-native-modalbox';
 
 export default class ToDoDetails extends Component {
 
-    constructor(props, context) {
-        super(props, context);
-        this.state = {}
-    }
+	constructor(props, context) {
+		super(props, context);
+		this.state = {
+			text: props.todoText
+		}
+	}
 
-    componentWillMount() {
+	componentWillReceiveProps(nextProps) {
+		this.setState({ text: nextProps.todoText })
+	}
 
-    }
+	render() {
 
-    componentDidMount() {
+		let {
+			isOpen,
+			onClose,
+			todoText,
+			onChangeText
+		 } = this.props;
 
-    }
+		let { text } = this.state;
 
-    render() {
-
-        // let { } = this.props;
-        // let { } = this.state;
-
-        return (
-            <View style={styles.mainContainer}>
-                <Text>ToDoDetails</Text>
-            </View>
-        );
-    }
+		return (
+			<Modal
+				isOpen={isOpen}
+				onClosed={onClose}
+				swipeToClose={true}
+				backdropPressToClose={false}
+				coverScreen={false}
+				position='center'
+				backdrop={true}
+				animationDuration={200}
+				easing={Easing.elastic(0.8)}
+			>
+				<Container>
+					<Header />
+					<Content>
+						<Card>
+							{/*<CardItem header>
+								<Text>NativeBase</Text>
+							</CardItem>*/}
+							<CardItem>
+								<Body>
+									<Textarea
+										value={text}
+										onChangeText={(text) => {
+											this.setState({
+												text
+											})
+											onChangeText(text)
+										}} />
+								</Body>
+							</CardItem>
+							{/*<CardItem footer>
+								<Text>GeekyAnts</Text>
+							</CardItem>*/}
+						</Card>
+					</Content>
+				</Container>
+			</Modal>
+		);
+	}
 }

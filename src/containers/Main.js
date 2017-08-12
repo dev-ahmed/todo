@@ -18,6 +18,7 @@ import {
 import { Container } from 'native-base';
 import Header from "@ui/Header";
 import DialogBox from 'react-native-dialogbox';
+import TodoDetails from '@ui/TodoDetails';
 import { todosHelper } from "@lib/todos";
 
 const buttons = footerButtonsArray
@@ -31,7 +32,10 @@ export default class Main extends Component {
 		this.allTodos = [];
 		this.state = {
 			todos: [],
-			filterType: 'All'
+			filterType: 'All',
+			openTodoDetails: false,
+			clickedTodo: null,
+			currentSelectedTodo: {}
 		}
 	}
 
@@ -58,6 +62,7 @@ export default class Main extends Component {
 				finished={data.checked}
 				handleIconPress={() => this.checkTodo(data.index)}
 				deleteTodo={() => { this.handleTodoLongPress(data.index) }}
+				onPress={() => this.openTodoDetails(index)}
 			/>
 		)
 	}
@@ -66,22 +71,35 @@ export default class Main extends Component {
 
 		let {
 			todos,
+			openTodoDetails,
+			currentSelectedTodo
 		} = this.state;
 
 		return (
 			<View style={styles.mainContainer}>
-				<Header title="ToDo App" />
+				<Header
+					title="ToDo App" />
 				<Container
-					style={styles.subContainer}
-				>
-					<Input addNewTodo={(value) => this.addNewTodo(value)} />
+					style={styles.subContainer} >
+					<Input
+						addNewTodo={(value) => this.addNewTodo(value)} />
 					<Todos
 						renderRow={(data, rowId, index) => this.renderRow(data, rowId, index)}
 						todos={ds.cloneWithRows(todos)}
 					/>
 				</Container>
-				<BottomMenu buttons={buttons} handleClick={(filterType) => this.handleFilter(filterType)} />
-				<DialogBox ref={dialogbox => { this.dialogbox = dialogbox }} />
+				<BottomMenu
+					buttons={buttons}
+					handleClick={(filterType) => this.handleFilter(filterType)} />
+				<DialogBox
+					ref={dialogbox => { this.dialogbox = dialogbox }} />
+				<TodoDetails
+					onChangeText={(text) => {
+						this.updateTodo(text);
+					}}
+					todoText={"name" in currentSelectedTodo ? currentSelectedTodo.name : ""}
+					isOpen={openTodoDetails}
+					onClose={() => this.onCloseTodoDetails()} />
 			</View>
 		);
 	}
@@ -119,7 +137,6 @@ export default class Main extends Component {
 		let { filterType } = this.state;
 		let { allTodos } = this;
 		let todos = todosHelper.deleteTodoHandler(index, allTodos);
-		console.log('todos after delete', todos);
 		this.allTodos = todos;
 		this.setState({
 			todos: this.filterTodos(filterType, todos)
@@ -134,7 +151,6 @@ export default class Main extends Component {
 		tmp['name'] = todo;
 		tmp['index'] = todos.length !== 0 ? todos[todos.length - 1].index + 1 : todos.length;
 		tmp['checked'] = false;
-		// console.log(todos);
 		allTodos.push(tmp);
 
 		this.setState({
@@ -147,15 +163,7 @@ export default class Main extends Component {
 	checkTodo(index) {
 		let { filterType } = this.state;
 		let todos = this.allTodos;
-		console.log('index of checked', index);
-		console.log('todos before check', todos);
-
 		todos[index].checked = !todos[index].checked;
-		console.log('checked todo', todos[index]);
-
-
-		console.log('todos after check', todos);
-
 		this.allTodos = todos;
 		this.setState({
 			todos: this.filterTodos(filterType, todos)
@@ -167,6 +175,26 @@ export default class Main extends Component {
 	filterTodos(filterType, todos) {
 		this.setState({ filterType });
 		return todosHelper.filterTodosHandler(filterType, todos);
+	}
+
+	onCloseTodoDetails() {
+		this.setState({ openTodoDetails: false })
+	}
+
+	openTodoDetails(index) {
+		this.setState({ openTodoDetails: true, currentSelectedTodo: this.state.todos[index] })
+	}
+
+	updateTodo(text) {
+		let todos = this.allTodos;
+		let { currentSelectedTodo, filterType } = this.state;
+		console.log(currentSelectedTodo);
+		todos[currentSelectedTodo.index].name = text;
+		this.allTodos = todos;
+		this.setState(
+			{ todos: this.filterTodos(filterType, this.allTodos) },
+			() => todosHelper.addTodosToStorage(todos)
+		)
 	}
 
 

@@ -49,7 +49,8 @@ class Todo extends Component {
 			itemName,
 			handleIconPress,
 			finished,
-			deleteTodo
+			deleteTodo,
+			onPress
 		} = this.props
 
 		return (
@@ -58,6 +59,7 @@ class Todo extends Component {
 					<TouchableOpacity
 						style={styles.btn}
 						onLongPress={deleteTodo}
+						onPress={onPress}
 					>
 						<Text numberOfLines={2} > {itemName} </Text>
 					</TouchableOpacity>
