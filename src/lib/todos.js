@@ -2,7 +2,6 @@ import React from 'react';
 import {
 	AsyncStorage
 } from 'react-native';
-
 import _ from 'lodash';
 
 class Todos {
@@ -64,7 +63,15 @@ class Todos {
 		return AsyncStorage.getItem('todos');
 	}
 
-
+	getSingleTodo(todos, index) {
+		return new Promise((resolve, reject) => {
+			todos.map((todo, i) => {
+				if (todo.index === index) {
+					resolve(i);
+				}
+			})
+		})
+	}
 
 }
 

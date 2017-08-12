@@ -4,9 +4,22 @@ import {
 	View,
 	Text,
 	AsyncStorage,
-	ListView
+	ListView,
+	ScrollView,
+	BackAndroid
 } from 'react-native';
 import { styles } from './style';
+import Toast from 'react-native-simple-toast';
+import moment from 'moment';
+import AndroidBackButton from "react-native-android-back-button"
+
+import {
+	ListItem,
+	Item,
+	List,
+	Content
+} from 'native-base';
+import _ from 'lodash';
 
 import BottomMenu from '@ui/BottomMenu';
 import Todos from '@ui/Todos';
@@ -20,7 +33,6 @@ import Header from "@ui/Header";
 import DialogBox from 'react-native-dialogbox';
 import TodoDetails from '@ui/TodoDetails';
 import { todosHelper } from "@lib/todos";
-import moment from 'moment';
 
 
 const buttons = footerButtonsArray
@@ -40,6 +52,8 @@ export default class Main extends Component {
 			clickedTodo: null,
 			currentSelectedTodo: {}
 		}
+		this.counter = 0;
+		this.handleBackButton();
 	}
 
 	componentWillMount() {
@@ -61,11 +75,10 @@ export default class Main extends Component {
 	renderRow(data, rowId, index) {
 		return (
 			<Todo
-				itemName={data.name}
-				finished={data.checked}
+				item={data}
 				handleIconPress={() => this.checkTodo(data.index)}
 				deleteTodo={() => { this.handleTodoLongPress(data.index) }}
-				onPress={() => this.openTodoDetails(index)}
+				onPress={() => this.openTodoDetails(data.index)}
 			/>
 		)
 	}
@@ -77,6 +90,7 @@ export default class Main extends Component {
 			openTodoDetails,
 			currentSelectedTodo
 		} = this.state;
+		let groupingTodos = _.groupBy(todos, todo => todo.name[0]);
 
 		return (
 			<View style={styles.mainContainer}>
@@ -86,10 +100,26 @@ export default class Main extends Component {
 					style={styles.subContainer} >
 					<Input
 						addNewTodo={(value) => this.addNewTodo(value)} />
-					<Todos
-						renderRow={(data, rowId, index) => this.renderRow(data, rowId, index)}
-						todos={ds.cloneWithRows(todos)}
-					/>
+					<ScrollView>
+						{
+							Object.keys(groupingTodos).sort().map((key) => {
+								return (
+									<Content >
+										<ListItem itemDivider style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' }}>
+											<Item style={{ alignItems: 'center', justifyContent: 'center' }} >
+												<Text>	{key.toUpperCase()} </Text>
+											</Item>
+										</ListItem>
+										<Todos
+											renderRow={(data, rowId, index) => this.renderRow(data, rowId, index)}
+											todos={ds.cloneWithRows(groupingTodos[key])}
+										/>
+									</Content>
+								)
+							})
+						}
+					</ScrollView>
+
 				</Container>
 				<BottomMenu
 					buttons={buttons}
@@ -112,6 +142,19 @@ export default class Main extends Component {
 		let filteredTodos = this.filterTodos(filterType, this.allTodos);
 		this.setState({
 			todos: filteredTodos
+		})
+	}
+
+	handleBackButton() {
+		BackAndroid.addEventListener("hardwareBackPress", () => {
+			this.counter++
+
+			if (this.state.openTodoDetails) {
+				this.setState({ openTodoDetails: false })
+				return true;
+			} else {
+				return false;
+			}
 		})
 	}
 
@@ -140,10 +183,11 @@ export default class Main extends Component {
 	deleteTodo(index) {
 		let { filterType } = this.state;
 		this.allTodos = todosHelper.deleteTodoHandler(index, this.allTodos);
-
 		this.setState({
 			todos: this.filterTodos(filterType, this.allTodos)
-		}, todosHelper.addTodosToStorage(this.allTodos))
+		}, () => {
+			todosHelper.addTodosToStorage(this.allTodos)
+		})
 	}
 
 	addNewTodo(todo) {
@@ -155,8 +199,9 @@ export default class Main extends Component {
 		tmp['index'] = todos.length !== 0 ? todos[todos.length - 1].index + 1 : todos.length;
 		tmp['checked'] = false;
 		tmp['date'] = now;
-		allTodos.push(tmp);
 
+		allTodos.push(tmp);
+		console.log(allTodos)
 		this.setState({
 			todos: this.filterTodos(filterType, allTodos)
 		}, () => {
@@ -167,13 +212,17 @@ export default class Main extends Component {
 	checkTodo(index) {
 		let { filterType } = this.state;
 		let todos = this.allTodos;
-		todos[index].checked = !todos[index].checked;
-		this.allTodos = todos;
-		this.setState({
-			todos: this.filterTodos(filterType, todos)
-		}, () => {
-			todosHelper.addTodosToStorage(todos);
-		});
+
+		todosHelper.getSingleTodo(this.allTodos, index)
+			.then((i) => {
+				todos[i].checked = !todos[i].checked;
+				this.allTodos = todos;
+				this.setState({
+					todos: this.filterTodos(filterType, todos)
+				}, () => {
+					todosHelper.addTodosToStorage(todos);
+				});
+			})
 	}
 
 	filterTodos(filterType, todos) {
@@ -186,23 +235,28 @@ export default class Main extends Component {
 	}
 
 	openTodoDetails(index) {
-		this.setState({ openTodoDetails: true, currentSelectedTodo: this.state.todos[index] })
+		todosHelper.getSingleTodo(this.allTodos, index)
+			.then((i) => {
+				this.setState({ openTodoDetails: true, currentSelectedTodo: this.state.todos[i] })
+			})
 	}
 
 	updateTodo(text) {
 		let todos = this.allTodos;
 		let { currentSelectedTodo, filterType } = this.state;
-		console.log(currentSelectedTodo);
-		todos[currentSelectedTodo.index]['name'] = text;
-		todos[currentSelectedTodo.index]['date'] = now;
-		this.allTodos = todos;
-		this.setState(
-			{
-				currentSelectedTodo,
-				todos: this.filterTodos(filterType, this.allTodos)
-			},
-			() => todosHelper.addTodosToStorage(todos)
-		)
+
+		todosHelper.getSingleTodo(this.allTodos, currentSelectedTodo.index)
+			.then((i) => {
+				todos[i]['name'] = text;
+				todos[i]['date'] = now;
+				this.allTodos = todos;
+				this.setState({
+					currentSelectedTodo,
+					todos: this.filterTodos(filterType, this.allTodos)
+				},
+					() => todosHelper.addTodosToStorage(todos)
+				)
+			})
 	}
 
 

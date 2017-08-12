@@ -15,7 +15,8 @@
     "react-native": "0.47.1",
     "react-native-dialogbox": "^0.6.6",
     "react-native-modalbox": "^1.4.2",
-    "react-native-responsive-dimensions": "^1.0.1"
+    "react-native-responsive-dimensions": "^1.0.1",
+    "react-native-simple-toast": "0.0.6"
   },
   "devDependencies": {
     "react-native-debugger-open": "^0.3.11",

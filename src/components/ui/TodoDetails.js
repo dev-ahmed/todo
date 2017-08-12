@@ -56,8 +56,7 @@ export default class ToDoDetails extends Component {
 				easing={Easing.elastic(0.8)}
 			>
 				<Container>
-					{/*<Header />*/}
-					<Content>
+					<Content style={{ marginTop: 50 }}>
 						<Card>
 							<CardItem header>
 								<Text>{date}</Text>

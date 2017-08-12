@@ -11,7 +11,8 @@ import {
 	Item,
 	Input,
 	Icon,
-	Button
+	Button,
+	ListItem
 } from 'native-base'
 import {
 	responsiveHeight,
@@ -46,26 +47,25 @@ class Todo extends Component {
 	render() {
 
 		let {
-			itemName,
 			handleIconPress,
-			finished,
 			deleteTodo,
-			onPress
+			onPress,
+			item
 		} = this.props
 
 		return (
-			<Content style={styles.mainContainer}>
-				<Item style={styles.item} success={finished}>
+			// <Content style={styles.mainContainer} disableKBDismissScroll >
+				<Item style={styles.item} success={item.checked} >
 					<TouchableOpacity
 						style={styles.btn}
 						onLongPress={deleteTodo}
 						onPress={onPress}
 					>
-						<Text numberOfLines={2} > {itemName} </Text>
+						<Text numberOfLines={2} > {item.name} </Text>
 					</TouchableOpacity>
 					<Icon name='checkmark-circle' onPress={handleIconPress} />
 				</Item>
-			</Content>
+			// </Content>
 		);
 	}
 }

@@ -7,7 +7,7 @@ import {
 	ListView
 } from 'react-native'
 
-import { List } from 'native-base';
+import { Container } from 'native-base';
 
 const styles = StyleSheet.create({
 	mainContainer: {
@@ -31,8 +31,12 @@ class Todos extends Component {
 		let { todos, renderRow } = this.props;
 		// let { } = this.state;
 
+
+
 		return (
 			<ListView
+				style={styles.mainContainer}
+				scrollEnabled={false}
 				dataSource={todos}
 				//dataArray={todos}
 				renderRow={(data, rowId, index) => renderRow(data, rowId, index)}
