@@ -53,7 +53,7 @@ export default class TodoInput extends Component {
 				<Icon
 					name='add-circle'
 					onPress={() => {
-						inputValue.length > 0 ? addNewTodo(inputValue) : null
+						inputValue && inputValue.length > 0 ? addNewTodo(inputValue) : null
 						this.setState({ inputValue: null })
 					}} />
 			</Item>

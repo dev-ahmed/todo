@@ -14,7 +14,7 @@ import {
 	Body,
 	Textarea
 } from 'native-base';
-
+import { responsiveWidth } from 'react-native-responsive-dimensions'
 
 import Modal from 'react-native-modalbox';
 
@@ -56,7 +56,7 @@ export default class ToDoDetails extends Component {
 				easing={Easing.elastic(0.8)}
 			>
 				<Container>
-					<Header />
+					{/*<Header />*/}
 					<Content>
 						<Card>
 							<CardItem header>
@@ -65,6 +65,7 @@ export default class ToDoDetails extends Component {
 							<CardItem>
 								<Body>
 									<Textarea
+										style={{ width: responsiveWidth(90) }}
 										value={text}
 										onChangeText={(text) => {
 											this.setState({

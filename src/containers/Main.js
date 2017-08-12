@@ -25,7 +25,8 @@ import moment from 'moment';
 
 const buttons = footerButtonsArray
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-
+let date = new Date();
+const now = moment().format('DD MMM - HH:mm a');
 
 export default class Main extends Component {
 
@@ -154,7 +155,7 @@ export default class Main extends Component {
 		tmp['name'] = todo;
 		tmp['index'] = todos.length !== 0 ? todos[todos.length - 1].index + 1 : todos.length;
 		tmp['checked'] = false;
-		tmp['date'] = moment().format('YYYY/MMM/DD HH:MM')
+		tmp['date'] = now;
 		allTodos.push(tmp);
 
 		this.setState({
@@ -193,11 +194,14 @@ export default class Main extends Component {
 		let todos = this.allTodos;
 		let { currentSelectedTodo, filterType } = this.state;
 		console.log(currentSelectedTodo);
-		todos[currentSelectedTodo.index].name = text;
-		todos[currentSelectedTodo.index].date = moment().format('DD MMM - HH:MM a');
+		todos[currentSelectedTodo.index]['name'] = text;
+		todos[currentSelectedTodo.index]['date'] = now;
 		this.allTodos = todos;
 		this.setState(
-			{ todos: this.filterTodos(filterType, this.allTodos) },
+			{
+				currentSelectedTodo,
+				todos: this.filterTodos(filterType, this.allTodos)
+			},
 			() => todosHelper.addTodosToStorage(todos)
 		)
 	}
