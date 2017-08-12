@@ -139,12 +139,11 @@ export default class Main extends Component {
 
 	deleteTodo(index) {
 		let { filterType } = this.state;
-		let { allTodos } = this;
-		let todos = todosHelper.deleteTodoHandler(index, allTodos);
-		this.allTodos = todos;
+		this.allTodos = todosHelper.deleteTodoHandler(index, this.allTodos);
+
 		this.setState({
-			todos: this.filterTodos(filterType, todos)
-		}, todosHelper.addTodosToStorage(todos))
+			todos: this.filterTodos(filterType, this.allTodos)
+		}, todosHelper.addTodosToStorage(this.allTodos))
 	}
 
 	addNewTodo(todo) {
