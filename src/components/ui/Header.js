@@ -3,28 +3,32 @@ import {
 
 } from 'react-native';
 import {
-    Header,
-    Item,
-    Text
+	Header,
+	Item,
+	Text,
+	Button
 } from 'native-base';
 
 class CustomHeader extends Component {
 
-    constructor(props) {
-        super(props);
-    }
+	constructor(props) {
+		super(props);
+	}
 
-    render() {
-        let { title } = this.props;
+	render() {
+		let { activeItems } = this.props;
 
-        return (
-            <Header>
-                <Item>
-                    <Text > {title} </Text>
-                </Item>
-            </Header>
-        )
-    }
+		return (
+			<Header>
+				<Item>
+					{
+						activeItems > 0 ? <Text> {activeItems} Item left </Text> : null
+					}
+
+				</Item>
+			</Header>
+		)
+	}
 
 }
 

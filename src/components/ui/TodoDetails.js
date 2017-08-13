@@ -15,7 +15,8 @@ import {
 	Text,
 	Body,
 	Textarea,
-	Badge
+	Badge,
+	Button
 } from 'native-base';
 import { responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 
@@ -30,8 +31,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between'
 	},
 	badge: {
-		width: 15,
-		height: 15,
+		width: 20,
+		height: 20,
 		// borderRadius: 50
 	}
 })
@@ -59,7 +60,8 @@ export default class ToDoDetails extends Component {
 			date,
 			colors,
 			activeColor,
-			setTodoColor
+			setTodoColor,
+			clearHighlight
 		 } = this.props;
 
 		let { text } = this.state;
@@ -96,6 +98,11 @@ export default class ToDoDetails extends Component {
 								</Body>
 							</CardItem>
 							<CardItem footer style={styles.footer}>
+								<Button
+									onPress={() => clearHighlight()}
+									transparent>
+									<Text>Clear</Text>
+								</Button>
 								{
 									colors.map((color) => {
 										return (

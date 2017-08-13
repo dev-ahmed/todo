@@ -20,6 +20,7 @@ import {
 } from 'native-base';
 import _ from 'lodash';
 
+import Fab from "@ui/Fab";
 import BottomMenu from '@ui/BottomMenu';
 import Todos from '@ui/Todos';
 import Todo from "@ui/Todo";
@@ -50,7 +51,8 @@ export default class Main extends Component {
 			filterType: 'All',
 			openTodoDetails: false,
 			clickedTodo: null,
-			currentSelectedTodo: {}
+			currentSelectedTodo: {},
+			active: false
 		}
 		this.counter = 0;
 		this.handleBackButton();
@@ -93,10 +95,11 @@ export default class Main extends Component {
 		} = this.state;
 		let groupingTodos = _.groupBy(todos, todo => todo.name[0]);
 
+		let leftTodos = todos.filter(todo => !todo.checked);
 		return (
 			<View style={styles.mainContainer}>
 				<Header
-					title="ToDo App" />
+					activeItems={leftTodos.length} />
 				<Container
 					style={styles.subContainer} >
 					<Input
@@ -121,7 +124,10 @@ export default class Main extends Component {
 							})
 						}
 					</ScrollView>
-
+					<Fab
+						clearCompleted={() => this.clearCompleted()}
+						revertSort={() => this.revertSort()}
+					/>
 				</Container>
 				<BottomMenu
 					buttons={buttons}
@@ -138,7 +144,9 @@ export default class Main extends Component {
 					activeColor={this.state.currentSelectedTodo.color}
 					colors={colors}
 					setTodoColor={(color) => this.setTodoColor(color)}
-					onClose={() => this.onCloseTodoDetails()} />
+					onClose={() => this.onCloseTodoDetails()}
+					clearHighlight={() => this.clearHighlight()}
+				/>
 			</View>
 		);
 	}
@@ -288,4 +296,18 @@ export default class Main extends Component {
 			})
 	}
 
+
+	clearCompleted() {
+		this.allTodos = this.allTodos.filter(todo => !todo.checked)
+		this.setState({
+			todos: this.filterTodos(this.state.filterType, this.allTodos)
+		},
+			() => {
+				todosHelper.addTodosToStorage(this.allTodos)
+			})
+	}
+
+	clearHighlight() {
+		this.setTodoColor('white');
+	}
 }
