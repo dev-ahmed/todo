@@ -296,7 +296,6 @@ export default class Main extends Component {
 			})
 	}
 
-
 	clearCompleted() {
 		this.allTodos = this.allTodos.filter(todo => !todo.checked)
 		this.setState({

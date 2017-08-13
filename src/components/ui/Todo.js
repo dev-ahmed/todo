@@ -62,7 +62,7 @@ class Todo extends Component {
 					onLongPress={deleteTodo}
 					onPress={onPress}
 				>
-					<Text style={{ color: itemTextColor }} numberOfLines={2} > {item.name} </Text>
+					<Text style={{ color: itemTextColor != 'white' ? itemTextColor : 'black' }} numberOfLines={2} > {item.name} </Text>
 				</TouchableOpacity>
 				<Icon name='checkmark-circle' onPress={handleIconPress} />
 			</Item>
