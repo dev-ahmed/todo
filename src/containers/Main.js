@@ -197,7 +197,7 @@ export default class Main extends Component {
 
 	onInputTextChange(text) {
 		this.setState({
-			todos: this.state.todos.filter(todo => todo.name.includes(text))
+			todos: this.filterTodos(this.state.filterType, this.allTodos.filter(todo => todo.name.includes(text)))
 		})
 	}
 
