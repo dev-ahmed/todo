@@ -33,7 +33,8 @@ export default class TodoInput extends Component {
 	render() {
 
 		let {
-			addNewTodo
+			addNewTodo,
+			onChangeText
 		 } = this.props;
 		let {
 			inputValue
@@ -49,7 +50,11 @@ export default class TodoInput extends Component {
 					}}
 					placeholder='Add your todo'
 					value={inputValue}
-					onChangeText={inputValue => this.setState({ inputValue })} />
+					onChangeText={(inputValue) => {
+						onChangeText(inputValue)
+						this.setState({ inputValue })
+					}
+					} />
 				<Button
 					transparent
 					onPress={() => {

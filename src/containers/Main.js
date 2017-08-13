@@ -100,6 +100,7 @@ export default class Main extends Component {
 				<Container
 					style={styles.subContainer} >
 					<Input
+						onChangeText={(text) => this.onInputTextChange(text)}
 						addNewTodo={(value) => this.addNewTodo(value)} />
 					<ScrollView>
 						{
@@ -191,6 +192,12 @@ export default class Main extends Component {
 			todos: this.filterTodos(filterType, this.allTodos)
 		}, () => {
 			todosHelper.addTodosToStorage(this.allTodos)
+		})
+	}
+
+	onInputTextChange(text) {
+		this.setState({
+			todos: this.allTodos.filter(todo => todo.name.includes(text))
 		})
 	}
 
