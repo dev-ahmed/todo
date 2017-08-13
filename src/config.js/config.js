@@ -3,3 +3,12 @@ export const footerButtonsArray = [
     'Active',
     'Completed'
 ]
+
+
+export const colors = [
+    'red',
+    'blue',
+    'green',
+    'brown',
+    'orange'
+]

@@ -11,7 +11,6 @@ import {
 import { styles } from './style';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
-import AndroidBackButton from "react-native-android-back-button"
 
 import {
 	ListItem,
@@ -26,7 +25,8 @@ import Todos from '@ui/Todos';
 import Todo from "@ui/Todo";
 import Input from "@ui/Input";
 import {
-	footerButtonsArray
+	footerButtonsArray,
+	colors
 } from '@config/config';
 import { Container } from 'native-base';
 import Header from "@ui/Header";
@@ -133,6 +133,9 @@ export default class Main extends Component {
 					date={"date" in currentSelectedTodo ? currentSelectedTodo.date : ""}
 					todoText={"name" in currentSelectedTodo ? currentSelectedTodo.name : ""}
 					isOpen={openTodoDetails}
+					activeColor={this.state.currentSelectedTodo.color}
+					colors={colors}
+					setTodoColor={(color) => this.setTodoColor(color)}
 					onClose={() => this.onCloseTodoDetails()} />
 			</View>
 		);
@@ -256,6 +259,19 @@ export default class Main extends Component {
 				},
 					() => todosHelper.addTodosToStorage(todos)
 				)
+			})
+	}
+
+	setTodoColor(color) {
+		todosHelper.getSingleTodo(this.allTodos, this.state.currentSelectedTodo.index)
+			.then((i) => {
+				this.allTodos[i]['color'] = color;
+				this.setState({
+					todos: this.filterTodos(this.state.filterType, this.allTodos)
+				},
+					() => {
+						todosHelper.addTodosToStorage(this.allTodos)
+					})
 			})
 	}
 

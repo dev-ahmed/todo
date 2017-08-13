@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 import {
 	View,
-	Easing
+	Easing,
+	StyleSheet,
+	TouchableOpacity
 } from 'react-native'
 import {
 	Container,
@@ -12,11 +14,27 @@ import {
 	CardItem,
 	Text,
 	Body,
-	Textarea
+	Textarea,
+	Badge
 } from 'native-base';
-import { responsiveWidth } from 'react-native-responsive-dimensions'
+import { responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 
 import Modal from 'react-native-modalbox';
+
+const styles = StyleSheet.create({
+	body: {
+		height: responsiveHeight(20)
+	},
+	footer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between'
+	},
+	badge: {
+		width: 15,
+		height: 15,
+		// borderRadius: 50
+	}
+})
 
 export default class ToDoDetails extends Component {
 
@@ -38,7 +56,10 @@ export default class ToDoDetails extends Component {
 			onClose,
 			todoText,
 			onChangeText,
-			date
+			date,
+			colors,
+			activeColor,
+			setTodoColor
 		 } = this.props;
 
 		let { text } = this.state;
@@ -61,8 +82,8 @@ export default class ToDoDetails extends Component {
 							<CardItem header>
 								<Text>{date}</Text>
 							</CardItem>
-							<CardItem>
-								<Body>
+							<CardItem style={{ backgroundColor: activeColor }}>
+								<Body style={styles.body}>
 									<Textarea
 										style={{ width: responsiveWidth(90) }}
 										value={text}
@@ -74,9 +95,17 @@ export default class ToDoDetails extends Component {
 										}} />
 								</Body>
 							</CardItem>
-							{/*<CardItem footer>
-								<Text>GeekyAnts</Text>
-							</CardItem>*/}
+							<CardItem footer style={styles.footer}>
+								{
+									colors.map((color) => {
+										return (
+											<TouchableOpacity onPress={() => { setTodoColor(color) }}>
+												<Badge style={[styles.badge, { backgroundColor: color }]} />
+											</TouchableOpacity>
+										)
+									})
+								}
+							</CardItem>
 						</Card>
 					</Content>
 				</Container>
