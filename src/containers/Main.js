@@ -76,6 +76,7 @@ export default class Main extends Component {
 		return (
 			<Todo
 				item={data}
+				itemTextColor={data.color}
 				handleIconPress={() => this.checkTodo(data.index)}
 				deleteTodo={() => { this.handleTodoLongPress(data.index) }}
 				onPress={() => this.openTodoDetails(data.index)}
@@ -274,6 +275,5 @@ export default class Main extends Component {
 					})
 			})
 	}
-
 
 }
