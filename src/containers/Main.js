@@ -197,26 +197,31 @@ export default class Main extends Component {
 
 	onInputTextChange(text) {
 		this.setState({
-			todos: this.allTodos.filter(todo => todo.name.includes(text))
+			todos: this.state.todos.filter(todo => todo.name.includes(text))
 		})
 	}
 
 	addNewTodo(todo) {
+
 		let { todos, filterType } = this.state;
 		let { allTodos } = this;
 		let tmp = {};
 
 		tmp['name'] = todo;
-		tmp['index'] = todos.length !== 0 ? todos[todos.length - 1].index + 1 : todos.length;
+		tmp['index'] = allTodos.length !== 0 ? allTodos[allTodos.length - 1].index + 1 : allTodos.length;
 		tmp['checked'] = false;
 		tmp['date'] = now;
 
 		allTodos.push(tmp);
-		console.log(allTodos)
+		let uniqueTodos = _.uniqBy(allTodos, item => item.name);
+		this.allTodos = uniqueTodos;
+		console.log(_.uniqBy(allTodos, item => item.name));
+
+
 		this.setState({
-			todos: this.filterTodos(filterType, allTodos)
+			todos: this.filterTodos(filterType, uniqueTodos)
 		}, () => {
-			todosHelper.addTodosToStorage(allTodos);
+			todosHelper.addTodosToStorage(uniqueTodos);
 		})
 	}
 

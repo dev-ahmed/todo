@@ -45,7 +45,7 @@ export default class TodoInput extends Component {
 				<Input
 					style={styles.input}
 					onSubmitEditing={() => {
-						inputValue && inputValue.length > 0 ? addNewTodo(inputValue) : null
+						inputValue && inputValue.length > 0 ? addNewTodo(inputValue.trim()) : null
 						this.setState({ inputValue: null })
 					}}
 					placeholder='Add your todo'
@@ -58,7 +58,7 @@ export default class TodoInput extends Component {
 				<Button
 					transparent
 					onPress={() => {
-						inputValue && inputValue.length > 0 ? addNewTodo(inputValue) : null
+						inputValue && inputValue.length > 0 ? addNewTodo(inputValue.trim()) : null
 						this.setState({ inputValue: null })
 					}}
 				>
