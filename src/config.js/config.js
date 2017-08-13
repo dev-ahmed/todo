@@ -8,7 +8,7 @@ export const footerButtonsArray = [
 export const colors = [
     'red',
     'blue',
-    'green',
+    'purple',
     'brown',
     'orange'
 ]
